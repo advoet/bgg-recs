@@ -9,7 +9,7 @@
 <body>
 	{% from "_formhelpers.html" import render_field %}
 	<div>What's your name?</div>
-	<form method=post action="/hello">
+	<form method=post action="/reviews">
 		<dl>
 			{{ render_field(form.username) }}
 		</dl>
