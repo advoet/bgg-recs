@@ -14,7 +14,8 @@ import requests
 from bs4 import BeautifulSoup
 
 # UTIL
-from utils import user_review_scraper
+from utils.user_review_scraper import get_review_list
+from utils.recommend import recommend
 
 #### PREPARING THE MODEL
 
@@ -25,12 +26,7 @@ model = pickle.load(open(MODEL, 'rb'))
 
 #### RECOMMENDATIONS
 
-recommend_from = None
-
-
-#### FLASK APP
-
-app = Flask(__name__)
+#### OBJECTS
 
 class UserForm(Form):
 	username = TextAreaField('BGG username:',[validators.DataRequired()])
@@ -50,6 +46,10 @@ class Item(object):
 		self.bgg_id = bgg_id
 		self.rating = rating
 
+#### FLASK APP
+
+app = Flask(__name__)
+
 @app.route('/')
 def index():
 	form = UserForm(request.form)
@@ -60,8 +60,9 @@ def get_reviews():
 	form = UserForm(request.form)
 	if request.method == 'POST' and form.validate():
 		name = request.form['username']
-		reviews = user_review_scraper.get_review_list(name)
-		reviews = [Item(*review) for review in reviews]
+		reviews = get_review_list(name)
+		# order is not preserved
+		reviews = [Item(*review.values()) for review in reviews]
 		reviews = ReviewTable(reviews)
 		return render_template('reviews.html', name = name, reviews = reviews)
 	return render_template('first_app.html', form = form)
@@ -71,7 +72,10 @@ def get_recommendations():
 	form = UserForm(request.form)
 	if request.method == 'POST' and form.validate():
 		name = request.form['username']
-		return render_template('recommendations.html', name = name)
+		reviews = get_review_list(name)
+		# reviews[0].keys() = ['game', 'bgg_game_id', 'score']
+		recommendations = recommend(model, reviews)
+		return render_template('recommendations.html', name = name, recommendations = recommendations)
 	return render_template('first_app.html', form = form)
 
 if __name__ == '__main__':

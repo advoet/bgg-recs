@@ -18,16 +18,19 @@ def pre_process(data):
 	return surprise.Dataset.load_from_df(data, reader)
 
 # PARAMETERS
-N_FACTORS = 16 # 30
-N_EPOCHS = 50 # 20 
+N_FACTORS = 200 # 30
+N_EPOCHS = 10 # 20 
 
 if __name__ == '__main__':
 	data = pre_process(load_data())
-	model = surprise.SVD(n_factors = N_FACTORS, n_epochs = N_EPOCHS, verbose = True)
+	model = surprise.SVD(
+		n_factors = N_FACTORS,
+		n_epochs = N_EPOCHS,
+		verbose = True,
+		lr_all = .001,
+	)
 	output = surprise.model_selection.cross_validate(model, data, verbose = True)
 	# SAVE MODEL
 	file_name = PKL_PATH + 'simple_svd.pkl'
 	with open(file_name, 'wb') as f:
 		pickle.dump(model, f)
-
-	print(f'Model saved to: {file_name}')
