@@ -23,7 +23,14 @@ def recommend(model, reviews, n = 10, candidates = 'top_100'):
 
 	# Set up for the surprise model currently. predict(user id, item id)
 	# User ID 60 is arbitrary, should do an embedding step first
-	# Also it is overfit
+	# OK ACTUALLY
+
+	'''
+	Surprise uses a bizarre system of inner / outer ids. Predict is supposed to take
+	an inner ID and just returns garbage when using an outer id
+
+	To Fix: after training with cross validation, build full train set?
+	'''
 	scores = [(ID, model.predict(60, ID)) for ID in candidates]
 	scores.sort(key = lambda x: -x[1].est)
 	best_n_ids = [x[0] for x in scores[:n]]
