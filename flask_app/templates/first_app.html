@@ -9,11 +9,12 @@
 <body>
 	{% from "_formhelpers.html" import render_field %}
 	<div>What's your name?</div>
-	<form method=post action="/recommendations">
+	<form method=POST>
 		<dl>
 			{{ render_field(form.username) }}
 		</dl>
-		<input type=submit value='Say Hello' name='submit_btn'>
+		<input type=submit value='Get my recommendations' formaction = '/recommendations'>
+		<input type=submit value='What have I reviewed?' formaction = /reviews>
 	</form>
 </body>
 

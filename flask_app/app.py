@@ -40,6 +40,7 @@ class ReviewTable(Table):
     bgg_id = Col('Game ID')
     game = Col('Game')
     rating = Col('Rating')
+    
 class Item(object):
 	def __init__(self, game, bgg_id, rating):
 		self.game = game

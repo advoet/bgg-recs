@@ -30,9 +30,11 @@ def recommend(model, reviews, n = 10, candidates = 'top_100'):
 	an inner ID and just returns garbage when using an outer id
 
 	To Fix: after training with cross validation, build full train set?
+
+	Upon further investigation, the inner id is an actual string?
 	'''
-	scores = [(ID, model.predict(60, ID)) for ID in candidates]
+	scores = [(ID, model.predict('tomvasel', ID)) for ID in candidates]
 	scores.sort(key = lambda x: -x[1].est)
 	best_n_ids = [x[0] for x in scores[:n]]
-	print([(score[0], score[1].est) for score in scores])
+	# print([(score[0], score[1].est) for score in scores])
 	return best_n_ids
